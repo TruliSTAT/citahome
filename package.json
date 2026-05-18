@@ -1,0 +1,12 @@
+{
+  "name": "citahome",
+  "version": "1.0.0",
+  "description": "CitaHome — CARFAX for residential properties",
+  "scripts": {
+    "start": "node backend/server.js",
+    "build": "cd backend && npm install && cd ../frontend && npm install && npm run build"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
