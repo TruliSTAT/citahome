@@ -140,6 +140,7 @@ const FAQS = [
 export default function Home() {
   const [searchResults, setSearchResults] = useState(null);
   const [bannerDismissed, setBannerDismissed] = useState(false);
+  const [searchMode, setSearchMode] = useState('owner'); // 'owner' | 'buyer'
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: '#0a0d14' }}>
@@ -203,13 +204,74 @@ export default function Home() {
             See your full record — and build one that works for you.
           </p>
 
+          {/* ── Dual Mode Tabs ── */}
+          <div className="inline-flex rounded-xl p-1 mb-8 border border-brand-border" style={{ background: '#0e1118' }}>
+            <button
+              onClick={() => { setSearchMode('owner'); setSearchResults(null); }}
+              className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                searchMode === 'owner'
+                  ? 'text-[#0a0d14] shadow-md'
+                  : 'text-gray-400 hover:text-gray-200'
+              }`}
+              style={searchMode === 'owner' ? { background: '#4BBDB5' } : {}}
+            >
+              🏠 I Own This Home
+            </button>
+            <button
+              onClick={() => { setSearchMode('buyer'); setSearchResults(null); }}
+              className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                searchMode === 'buyer'
+                  ? 'text-[#0a0d14] shadow-md'
+                  : 'text-gray-400 hover:text-gray-200'
+              }`}
+              style={searchMode === 'buyer' ? { background: '#D4A83A' } : {}}
+            >
+              🔍 I Want To Buy This Home
+            </button>
+          </div>
+
+          {/* Mode-specific headline */}
+          {searchMode === 'buyer' && (
+            <div className="mb-8">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#e2e8f0] mb-3">
+                Know Before You Offer.
+              </h2>
+              <p className="text-gray-400 max-w-2xl mx-auto leading-relaxed">
+                See verified job history, permit records, open permits, and red flags —
+                before you make the biggest financial decision of your life.
+              </p>
+            </div>
+          )}
+
           <div className="flex flex-col items-center gap-4">
             <SearchBar
-              placeholder="Enter your home address..."
+              placeholder={searchMode === 'buyer' ? 'Enter the property address...' : 'Enter your home address...'}
               onResults={setSearchResults}
             />
             <SearchResults results={searchResults} onClose={() => setSearchResults(null)} />
           </div>
+
+          {/* Mode CTA */}
+          {!searchResults && (
+            <div className="mt-6">
+              {searchMode === 'owner' ? (
+                <button
+                  className="btn-primary px-8 py-3"
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                >
+                  Build My Home's Record →
+                </button>
+              ) : (
+                <button
+                  className="px-8 py-3 rounded-xl font-bold text-[#0a0d14] transition-all duration-200 hover:opacity-90"
+                  style={{ background: '#D4A83A' }}
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                >
+                  Run a Property Report →
+                </button>
+              )}
+            </div>
+          )}
 
           {/* Stats bar */}
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4 text-sm text-gray-500">
@@ -488,6 +550,41 @@ export default function Home() {
                 <p className="text-gray-400 text-sm leading-relaxed">{item.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Property Passport ── */}
+      <section className="py-24 px-4" style={{ background: '#0e1118' }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="rounded-2xl p-10 border" style={{ background: 'linear-gradient(135deg, rgba(75,189,181,0.05) 0%, rgba(14,17,24,0.8) 100%)', borderColor: 'rgba(75,189,181,0.15)' }}>
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div>
+                <div className="text-5xl mb-6">🗂️</div>
+                <p className="text-xs font-bold uppercase tracking-widest text-brand mb-3">Property Passport</p>
+                <h2 className="text-3xl font-extrabold text-[#e2e8f0] mb-5 leading-tight">
+                  Your Home's History Travels With It.
+                </h2>
+                <p className="text-gray-400 leading-relaxed">
+                  When you sell, your CitaHome record transfers to the new owner automatically.
+                  Every verified job, every permit, every improvement — yours to pass on.
+                  Buyers inherit the truth. Sellers command better offers.
+                </p>
+              </div>
+              <div className="space-y-4">
+                {[
+                  { icon: '✅', text: 'Verified history transfers at closing — no paperwork needed.' },
+                  { icon: '📋', text: 'New owners see every improvement you made, with proof.' },
+                  { icon: '💰', text: 'Well-documented homes attract stronger, faster offers.' },
+                  { icon: '🔗', text: 'Part of the permanent Cita property record — forever.' },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-4 card py-4 px-5">
+                    <span className="text-xl flex-shrink-0 mt-0.5">{item.icon}</span>
+                    <span className="text-sm text-gray-300 leading-relaxed">{item.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>

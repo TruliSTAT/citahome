@@ -53,6 +53,7 @@ app.use('/api/reports', require('./routes/reports'));
 app.use('/api/sync/citapros', require('./routes/citapros-sync'));
 app.use('/api/sync/citatodo', require('./routes/citatodo-sync'));
 app.use('/api/history',      require('./routes/history'));
+app.use('/api/citacoin',     require('./routes/citacoin'));
 app.use('/uploads',          express.static(path.join(__dirname, 'uploads')));
 
 // ── Health check ──────────────────────────────────────────────────────────────
