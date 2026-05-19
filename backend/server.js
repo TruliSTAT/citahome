@@ -52,6 +52,8 @@ app.use('/api/property', require('./routes/property'));
 app.use('/api/reports', require('./routes/reports'));
 app.use('/api/sync/citapros', require('./routes/citapros-sync'));
 app.use('/api/sync/citatodo', require('./routes/citatodo-sync'));
+app.use('/api/history',      require('./routes/history'));
+app.use('/uploads',          express.static(path.join(__dirname, 'uploads')));
 
 // ── Health check ──────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {

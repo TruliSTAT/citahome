@@ -6,14 +6,14 @@ import PaywallGate from './PaywallGate.jsx';
 
 function RedFlagCard({ flag }) {
   const icons = {
-    open_permit: '⚠️',
-    recurring_issue: '🔁',
-    unverified_operator: '❓',
+    open_permit:          '⚠️',
+    recurring_issue:      '🔁',
+    unverified_operator:  '❓',
   };
   return (
-    <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-lg p-3">
-      <span className="text-xl mt-0.5">{icons[flag.type] || '⚠️'}</span>
-      <p className="text-red-800 text-sm">{flag.message}</p>
+    <div className="flex items-start gap-3 rounded-xl p-4 border" style={{ background: 'rgba(239,68,68,0.08)', borderColor: 'rgba(239,68,68,0.25)' }}>
+      <span className="text-xl mt-0.5 flex-shrink-0">{icons[flag.type] || '⚠️'}</span>
+      <p className="text-red-300 text-sm leading-relaxed">{flag.message}</p>
     </div>
   );
 }
@@ -32,34 +32,34 @@ export default function PropertyReport({ report, onUnlocked }) {
       <div className="card">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h1 className="text-xl font-bold text-gray-900">{property.address}</h1>
+            <h1 className="text-xl font-bold text-[#e2e8f0]">{property.address}</h1>
             {(property.city || property.state) && (
-              <p className="text-gray-500 mt-1">
+              <p className="text-gray-400 mt-1">
                 {[property.city, property.state, property.zip].filter(Boolean).join(', ')}
               </p>
             )}
           </div>
           {open_permits && open_permits.length > 0 && (
-            <span className="bg-red-100 text-red-800 border border-red-300 text-sm font-semibold px-3 py-1 rounded-full">
+            <span className="text-sm font-bold px-3 py-1 rounded-full border" style={{ background: 'rgba(239,68,68,0.1)', borderColor: 'rgba(239,68,68,0.3)', color: '#f87171' }}>
               {open_permits.length} Open Permit{open_permits.length !== 1 ? 's' : ''}
             </span>
           )}
         </div>
       </div>
 
-      {/* Growing note if sparse */}
+      {/* Growing note */}
       <GrowingReportNote recordCount={total_records} />
 
-      {/* Summary stats + system ages */}
+      {/* Summary stats */}
       <ReportSummary summary={summary} />
 
       {/* Red flags */}
       {red_flags && red_flags.length > 0 && (
-        <div className="card border-red-200">
-          <h2 className="text-base font-bold text-red-800 mb-3 flex items-center gap-2">
+        <div className="card">
+          <h2 className="text-base font-bold text-red-400 mb-4 flex items-center gap-2">
             <span>🚩</span> Red Flags ({red_flags.length})
           </h2>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {red_flags.map((flag, i) => (
               <RedFlagCard key={i} flag={flag} />
             ))}
@@ -69,7 +69,7 @@ export default function PropertyReport({ report, onUnlocked }) {
 
       {/* Service Timeline */}
       <div>
-        <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <h2 className="text-lg font-bold text-[#e2e8f0] mb-5 flex items-center gap-2">
           <span>📋</span> Service Timeline
           {total_records > 0 && (
             <span className="text-sm font-normal text-gray-500">
@@ -84,7 +84,7 @@ export default function PropertyReport({ report, onUnlocked }) {
         />
       </div>
 
-      {/* Paywall for locked records */}
+      {/* Paywall */}
       {preview_only && total_records > 3 && (
         <PaywallGate
           propertyId={property.id}
@@ -93,11 +93,12 @@ export default function PropertyReport({ report, onUnlocked }) {
         />
       )}
 
-      {/* CTA if no records */}
+      {/* Empty state */}
       {total_records === 0 && !preview_only && (
-        <div className="text-center py-6">
-          <p className="text-gray-500">No service records found for this property.</p>
-          <p className="text-sm text-gray-400 mt-1">Records appear here as CitaPros operators complete verified jobs at this address.</p>
+        <div className="text-center py-10">
+          <div className="text-5xl mb-4">📋</div>
+          <p className="text-gray-400">No service records found for this property yet.</p>
+          <p className="text-sm text-gray-600 mt-2">Records appear here as CitaPros operators complete verified jobs at this address.</p>
         </div>
       )}
     </div>

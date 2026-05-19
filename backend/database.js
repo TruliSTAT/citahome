@@ -68,6 +68,39 @@ function initDb() {
     CREATE INDEX IF NOT EXISTS idx_rp_property ON report_purchases(property_id);
   `);
 
+  // ── CitaCoin / Home History tables ──────────────────────────────────────
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS history_entries (
+      id                  TEXT PRIMARY KEY,
+      property_id         TEXT NOT NULL,
+      category            TEXT NOT NULL,
+      description         TEXT,
+      year_completed      INTEGER,
+      contractor_name     TEXT,
+      permit_number       TEXT,
+      proof_file_path     TEXT,
+      proof_payment_path  TEXT,
+      self_reported       INTEGER DEFAULT 0,
+      verification_status TEXT DEFAULT 'pending',
+      citacoin_awarded    INTEGER DEFAULT 0,
+      created_at          TEXT DEFAULT CURRENT_TIMESTAMP,
+      verified_at         TEXT
+    );
+    CREATE INDEX IF NOT EXISTS idx_he_property ON history_entries(property_id);
+    CREATE INDEX IF NOT EXISTS idx_he_status   ON history_entries(verification_status);
+
+    CREATE TABLE IF NOT EXISTS citacoin_ledger (
+      id          TEXT PRIMARY KEY,
+      property_id TEXT,
+      user_id     TEXT,
+      amount      INTEGER NOT NULL,
+      reason      TEXT,
+      entry_id    TEXT REFERENCES history_entries(id),
+      created_at  TEXT DEFAULT CURRENT_TIMESTAMP
+    );
+    CREATE INDEX IF NOT EXISTS idx_cl_property ON citacoin_ledger(property_id);
+  `);
+
   console.log('[DB] CitaHome database initialized');
   return db;
 }
