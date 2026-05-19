@@ -2,7 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const { getDb } = require('../database');
 const { normalize, parseComponents } = require('../lib/address-match');
-const { buildReport } = require('../lib/report-builder');
+const { buildReport, buildForecast } = require('../lib/report-builder');
 const { checkAddress } = require('../lib/forclos-lookup');
 const { JWT_SECRET } = require('../middleware/auth');
 
@@ -106,6 +106,12 @@ router.get('/:id/report', async (req, res) => {
   }
 
   const report = buildReport(property, records, previewOnly);
+
+  // Predictive Maintenance Forecast
+  report.forecast = buildForecast(
+    report.summary.system_ages_raw,
+    new Date().getFullYear()
+  );
 
   // Forclos bridge — check for distress records (foreclosures, liens, deeds)
   // Use address_raw for the lookup; falls back to null on any error (never blocks report)

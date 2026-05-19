@@ -4,6 +4,7 @@ import PropertyReport from '../components/PropertyReport.jsx';
 import SearchBar from '../components/SearchBar.jsx';
 import AddHistoryModal from '../components/AddHistoryModal.jsx';
 import MakeOfferModal from '../components/MakeOfferModal.jsx';
+import ForecastPanel from '../components/ForecastPanel.jsx';
 
 // ── Category config ──────────────────────────────────────────────────────────
 const CATEGORIES = [
@@ -329,6 +330,14 @@ export default function Report() {
                 </p>
               )}
             </div>
+
+            {/* Predictive Maintenance Forecast */}
+            {report?.forecast !== undefined && (
+              <ForecastPanel
+                items={report.forecast || []}
+                onAddHistory={() => setShowAddHistory(true)}
+              />
+            )}
 
             {/* Existing PropertyReport — keeps all logic, gets dark styling via global .card */}
             <PropertyReport report={report} onUnlocked={handleUnlocked} />
