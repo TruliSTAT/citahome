@@ -3,6 +3,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import PropertyReport from '../components/PropertyReport.jsx';
 import SearchBar from '../components/SearchBar.jsx';
 import AddHistoryModal from '../components/AddHistoryModal.jsx';
+import MakeOfferModal from '../components/MakeOfferModal.jsx';
 
 // ── Category config ──────────────────────────────────────────────────────────
 const CATEGORIES = [
@@ -75,6 +76,7 @@ export default function Report() {
   const [accessToken, setAccessToken] = useState(
     () => localStorage.getItem(`citahome_token_${id}`) || null
   );
+  const [showMakeOffer, setShowMakeOffer] = useState(false);
 
   // Demo category data (wired to real history entries in future)
   const [categoryData] = useState([
@@ -219,6 +221,29 @@ export default function Report() {
           <button onClick={() => navigate('/')} className="hover:text-brand transition-colors">Home</button>
           <span>/</span>
           <span className="text-gray-300 truncate">{address}</span>
+        </div>
+
+        {/* ── Make an Offer CTA ── */}
+        <div className="mb-6 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          style={{ background: 'rgba(212,168,58,0.06)', border: '1px solid rgba(212,168,58,0.2)' }}
+        >
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-base">💌</span>
+              <span className="text-xs font-bold uppercase tracking-wide" style={{ color: '#D4A83A' }}>Offers Accepted</span>
+            </div>
+            <p className="text-sm text-gray-400 leading-snug">
+              Interested in this property? Make a direct offer — even if it's not listed for sale.
+            </p>
+            <p className="text-xs text-gray-600 mt-1">Sometimes the best deals aren't on the market.</p>
+          </div>
+          <button
+            onClick={() => setShowMakeOffer(true)}
+            className="flex-shrink-0 rounded-xl px-6 py-3 font-extrabold text-sm transition-all hover:opacity-90"
+            style={{ background: '#D4A83A', color: '#0a0d14' }}
+          >
+            🏷️ Make an Offer on This Home
+          </button>
         </div>
 
         {/* Header row — streak + share */}
@@ -392,6 +417,15 @@ export default function Report() {
             setShowAddHistory(false);
             fetchReport(accessToken);
           }}
+        />
+      )}
+
+      {/* ── Make an Offer Modal ── */}
+      {showMakeOffer && (
+        <MakeOfferModal
+          propertyId={id}
+          address={address}
+          onClose={() => setShowMakeOffer(false)}
         />
       )}
     </div>

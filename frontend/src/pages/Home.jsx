@@ -243,6 +243,17 @@ export default function Home() {
             </div>
           )}
 
+          {/* Buyer off-market discovery nudge */}
+          {searchMode === 'buyer' && (
+            <div
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm mb-4 border"
+              style={{ background: 'rgba(212,168,58,0.08)', borderColor: 'rgba(212,168,58,0.2)', color: '#D4A83A' }}
+            >
+              <span>🏷️</span>
+              <span>Don't see your dream home listed? Search any address and make an offer directly — even if it's not for sale.</span>
+            </div>
+          )}
+
           <div className="flex flex-col items-center gap-4">
             <SearchBar
               placeholder={searchMode === 'buyer' ? 'Enter the property address...' : 'Enter your home address...'}

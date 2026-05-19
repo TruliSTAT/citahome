@@ -101,6 +101,26 @@ function initDb() {
     CREATE INDEX IF NOT EXISTS idx_cl_property ON citacoin_ledger(property_id);
   `);
 
+  // ── Property Offers ────────────────────────────────────────────────────────
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS property_offers (
+      id                   TEXT PRIMARY KEY,
+      property_id          TEXT NOT NULL,
+      buyer_name           TEXT NOT NULL,
+      buyer_email          TEXT NOT NULL,
+      buyer_phone          TEXT,
+      offer_amount         INTEGER NOT NULL,
+      financing_type       TEXT NOT NULL,
+      message              TEXT,
+      citaagent_requested  INTEGER DEFAULT 0,
+      status               TEXT DEFAULT 'pending',
+      created_at           TEXT DEFAULT CURRENT_TIMESTAMP,
+      viewed_at            TEXT
+    );
+    CREATE INDEX IF NOT EXISTS idx_po_property ON property_offers(property_id);
+    CREATE INDEX IF NOT EXISTS idx_po_status   ON property_offers(status);
+  `);
+
   console.log('[DB] CitaHome database initialized');
   return db;
 }
