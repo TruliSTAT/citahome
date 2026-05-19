@@ -18,10 +18,36 @@ function RedFlagCard({ flag }) {
   );
 }
 
+function DistressFlag({ distressFlags }) {
+  if (!distressFlags?.found) return null;
+  return (
+    <div className="bg-amber-950/30 border border-amber-600/40 rounded-xl p-4 mb-4">
+      <div className="flex items-start gap-3">
+        <span className="text-amber-400 text-xl flex-shrink-0">⚠️</span>
+        <div>
+          <p className="text-amber-300 font-semibold text-sm">Distressed Property Alert</p>
+          <p className="text-amber-200/80 text-sm mt-1">{distressFlags.message}</p>
+          <p className="text-amber-200/60 text-xs mt-2">
+            Source: Forclos public records database. Verify with a title company before making an offer.
+          </p>
+          <a
+            href="https://forclos.com"
+            target="_blank"
+            rel="noreferrer"
+            className="text-amber-400 text-xs underline mt-1 inline-block"
+          >
+            View full Forclos report →
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function PropertyReport({ report, onUnlocked }) {
   if (!report) return null;
 
-  const { property, summary, timeline, red_flags, open_permits, preview_only, total_records } = report;
+  const { property, summary, timeline, red_flags, open_permits, preview_only, total_records, distress_flags } = report;
 
   const address = [property.address, property.city, property.state, property.zip]
     .filter(Boolean).join(', ');
@@ -52,6 +78,9 @@ export default function PropertyReport({ report, onUnlocked }) {
 
       {/* Summary stats */}
       <ReportSummary summary={summary} />
+
+      {/* Distress flags (Forclos bridge) */}
+      <DistressFlag distressFlags={distress_flags} />
 
       {/* Red flags */}
       {red_flags && red_flags.length > 0 && (

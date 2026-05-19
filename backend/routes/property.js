@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const { getDb } = require('../database');
 const { normalize, parseComponents } = require('../lib/address-match');
 const { buildReport } = require('../lib/report-builder');
+const { checkAddress } = require('../lib/forclos-lookup');
 const { JWT_SECRET } = require('../middleware/auth');
 
 const router = express.Router();
@@ -64,7 +65,7 @@ router.get('/search', (req, res) => {
  * Returns preview (first 3 records) without auth.
  * Returns full report if valid purchase token is provided.
  */
-router.get('/:id/report', (req, res) => {
+router.get('/:id/report', async (req, res) => {
   const { id } = req.params;
   const db = getDb();
 
@@ -105,6 +106,21 @@ router.get('/:id/report', (req, res) => {
   }
 
   const report = buildReport(property, records, previewOnly);
+
+  // Forclos bridge — check for distress records (foreclosures, liens, deeds)
+  // Use address_raw for the lookup; falls back to null on any error (never blocks report)
+  const forclosData = await checkAddress(property.address_raw || property.address_norm);
+  report.distress_flags = forclosData?.found
+    ? {
+        found: true,
+        count: forclosData.count,
+        records: forclosData.records,
+        message: forclosData.count === 1
+          ? 'Public records show a foreclosure or tax lien filing on this property.'
+          : `Public records show ${forclosData.count} foreclosure or tax lien filings on this property.`,
+      }
+    : { found: false };
+
   res.json(report);
 });
 
